@@ -1,0 +1,175 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "27b80227_839344ae",
+        "filename": "src/CameraTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 1015645
+      },
+      "writtenOn": "2019-05-02T08:51:18Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 277,
+        "startChar": 0,
+        "endLine": 277,
+        "endChar": 2
+      },
+      "revId": "4d0e00d40cfe939fa456c962474ae8a910af3341",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c46c7cff_aeb2b731",
+        "filename": "src/CameraTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1015645
+      },
+      "writtenOn": "2019-05-02T08:51:18Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 302,
+        "startChar": 0,
+        "endLine": 302,
+        "endChar": 2
+      },
+      "revId": "4d0e00d40cfe939fa456c962474ae8a910af3341",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e81bc2a5_745a204f",
+        "filename": "src/CameraTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 1015645
+      },
+      "writtenOn": "2019-05-02T08:51:18Z",
+      "side": 1,
+      "message": "remove this",
+      "revId": "4d0e00d40cfe939fa456c962474ae8a910af3341",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "24fa8e68_25850005",
+        "filename": "src/CameraTest.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 1015645
+      },
+      "writtenOn": "2019-05-02T08:51:18Z",
+      "side": 1,
+      "message": "remove this",
+      "revId": "4d0e00d40cfe939fa456c962474ae8a910af3341",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7b00abf9_618c9498",
+        "filename": "src/DrmRender.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1015645
+      },
+      "writtenOn": "2019-05-02T08:51:18Z",
+      "side": 1,
+      "message": "insert line before",
+      "revId": "4d0e00d40cfe939fa456c962474ae8a910af3341",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9fb39e9a_f3d0e8b7",
+        "filename": "src/DrmRender.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 1015645
+      },
+      "writtenOn": "2019-05-02T08:51:18Z",
+      "side": 1,
+      "message": "remove empty line",
+      "revId": "4d0e00d40cfe939fa456c962474ae8a910af3341",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9d6a3818_609acfa5",
+        "filename": "src/DrmRender.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1015645
+      },
+      "writtenOn": "2019-05-02T08:51:18Z",
+      "side": 1,
+      "message": "remove empty line",
+      "revId": "4d0e00d40cfe939fa456c962474ae8a910af3341",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0078a493_25150a6f",
+        "filename": "src/DrmRender.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1015645
+      },
+      "writtenOn": "2019-05-02T08:51:18Z",
+      "side": 1,
+      "message": "remove empty line",
+      "revId": "4d0e00d40cfe939fa456c962474ae8a910af3341",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "01c4abea_30724163",
+        "filename": "src/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1015645
+      },
+      "writtenOn": "2019-05-02T08:51:18Z",
+      "side": 1,
+      "message": "set to new line",
+      "range": {
+        "startLine": 87,
+        "startChar": 26,
+        "endLine": 87,
+        "endChar": 27
+      },
+      "revId": "4d0e00d40cfe939fa456c962474ae8a910af3341",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}

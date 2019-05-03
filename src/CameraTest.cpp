@@ -128,7 +128,7 @@ static int SaveData(const char *file , void *buf, long size)
 static void RemoveStride(int w, int h, int align_factor, void *dst, void *src)
 {
 	int i;
-	uint32_t y_stride, c_stride, h_stride
+	uint32_t y_stride, c_stride, h_stride;
 	uint32_t w_align, h_align = 16;
 	uint32_t y_src_pos, cb_src_pos, cr_src_pos;
 	uint32_t y_dst_pos, cb_dst_pos, cr_dst_pos;
@@ -220,7 +220,8 @@ static int32_t VpuCamDpMain( APP_DATA *pAppData )
 
 	int32_t ret = 0, i;
 	int32_t iPlanes = IMG_PLANE_NUM;
-	int32_t inWidth, inHeight, cropWidth, cropHeight, dpWidth, dpHeight;
+	int32_t inWidth, inHeight, cropWidth, cropHeight;
+	uint16_t dpWidth, dpHeight;
 	int32_t dpPort;
 
 	char *outFileName = NULL;

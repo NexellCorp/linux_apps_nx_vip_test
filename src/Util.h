@@ -38,5 +38,7 @@ int32_t NX_FindPlaneForDisplay(int32_t crtcIdx, int32_t findRgb,
 				int32_t layerIdx,
 				MP_DRM_PLANE_INFO *pDrmPlaneInfo);
 int32_t NX_GetDisplayResolution(uint16_t *width, uint16_t *height);
+int32_t NX_SetPlanePropertyByPlaneID(int32_t hDrmFd, uint32_t planeId,
+	const char *property, uint32_t value, uint32_t *orgValue);
 
 #endif // __UTIL_h__

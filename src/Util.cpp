@@ -2,6 +2,12 @@
 #include <stdarg.h>
 
 #include <sys/time.h>
+#include <errno.h>
+#include <string.h>
+
+#include <unistd.h>
+#include <fcntl.h>
+#include <assert.h>
 
 #include "Util.h"
 
@@ -268,4 +274,53 @@ int32_t NX_GetDisplayResolution(uint16_t *width, uint16_t *height)
 
 	return ret;
 }
+
+int32_t NX_SetPlanePropertyByPlaneID(int32_t hDrmFd, uint32_t planeId,
+		const char *property, uint32_t value, uint32_t *orgValue)
+{
+	int ret = -1;
+	int32_t prop_id = -1;
+	int i;
+	drmModeObjectPropertiesPtr properties;
+
+	properties = drmModeObjectGetProperties(hDrmFd, planeId,
+			DRM_MODE_OBJECT_PLANE);
+	if (!properties)
+		goto ERROR;
+
+        for (i = 0; i < (int)properties->count_props; i++) {
+                drmModePropertyPtr p;
+
+                p = drmModeGetProperty(hDrmFd, properties->props[i]);
+                if (p) {
+                        if (strcmp(p->name, "IN_FORMATS") == 0) {
+                                drmModeFreeProperty(p);
+                                continue;
+                        }
+#ifdef _DEBUG
+			printf("p name = %s, p value = %d\n",
+					p->name, properties->prop_values[i]);
+#endif
+			if (!strcmp(p->name, property)) {
+				prop_id = p->prop_id;
+				if (orgValue)
+					*orgValue =
+					(uint32_t)properties->prop_values[i];
+				drmModeFreeProperty(p);
+				break;
+			}
+                }
+                drmModeFreeProperty(p);
+        }
+        drmModeFreeObjectProperties(properties);
+
+	if (prop_id > 0)
+		ret = drmModeObjectSetProperty(hDrmFd, planeId,
+			DRM_MODE_OBJECT_PLANE, prop_id, value);
+ERROR:
+	return ret;
+}
+
+
+
 //------------------------------------------------------------------------------

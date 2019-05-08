@@ -1,5 +1,6 @@
 AM_CPPFLAGS = \
 	$(WARN_CFLAGS)	\
+	-I. \
 	-I./include/linux \
 	-I${includedir} \
 	-I${includedir}/libdrm
@@ -7,7 +8,6 @@ AM_CPPFLAGS = \
 #vip_test_LDFLAGS = --static
 
 vip_test_LDADD = \
-	-L${libdir} \
 	-ldrm \
 	-lnx_video_api \
 	-lnx_drm_allocator \

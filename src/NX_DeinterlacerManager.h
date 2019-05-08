@@ -1,5 +1,5 @@
-#ifndef __NX_DEINNX_VID_MEMORY_INFOERLACER_MANANER__
-#define __NX_DEINNX_VID_MEMORY_INFOERLACER_MANAGER__
+#ifndef __NX_DEINTERLACER_MANANER__
+#define __NX_DEINTERLACER_MANAGER__
 
 #include <NX_Queue.h>
 #include "NX_Deinterlacer.h"

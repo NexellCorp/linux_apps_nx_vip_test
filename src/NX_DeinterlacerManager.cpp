@@ -17,7 +17,7 @@
 #define SRC_ALIGN	32
 
 #define _DEBUG	0
-#define DEINTER_MODE	DOUBLE_FRAME /* or SINGLE_FRAME */
+#define DEINTER_MODE	SINGLE_FRAME /* or DOUBLE_FRMAE */
 
 NX_DeinterlacerManager::NX_DeinterlacerManager(struct NX_DEINTER_PARAM param)
 	: mSrcWidth(param.srcWidth), mSrcHeight(param.srcHeight),

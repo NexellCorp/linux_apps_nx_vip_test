@@ -2,7 +2,7 @@
 #define __NX_DEINTERLACER_MANAGER__
 
 #include <NX_Queue.h>
-#include "NX_Deinterlacer.h"
+#include "include/linux/NX_Deinterlacer.h"
 #include "NX_CV4l2Camera.h"
 
 #define DEINTER_BUF_NUM	8

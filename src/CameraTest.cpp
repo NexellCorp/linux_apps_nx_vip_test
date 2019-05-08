@@ -44,10 +44,16 @@ enum DRM_PLANE_TYPE {
 
 extern bool bExitLoop;
 
+static int gDrmFd;
+static int32_t gPlaneID;
+static uint32_t gOrgValue;
+
 static void signal_handler( int32_t sig )
 {
 	printf("Aborted by signal %s (%d)..\n", (char*)strsignal(sig), sig);
 
+	NX_SetPlanePropertyByPlaneID(gDrmFd, gPlaneID, "video-priority",
+			gOrgValue, NULL);
 	switch( sig )
 	{
 		case SIGINT :
@@ -192,7 +198,7 @@ static int32_t VpuCamDpMain( APP_DATA *pAppData )
 {
 	DRM_DSP_HANDLE hDsp = NULL;
 	DRM_RECT srcRect, dstRect;
-	int32_t planeID, crtcID;
+	int32_t crtcID;
 	NX_VIP_INFO info;
 	NX_V4l2_INFO v4l2;
 	NX_CV4l2Camera*	pV4l2Camera = NULL;
@@ -226,8 +232,6 @@ static int32_t VpuCamDpMain( APP_DATA *pAppData )
 
 	char *outFileName = NULL;
 	FILE *fpOut = NULL;
-
-	int drmFd;
 
 	if ((pAppData->width == 0) || (pAppData->height == 0)) {
 		inWidth = 720;
@@ -264,9 +268,9 @@ static int32_t VpuCamDpMain( APP_DATA *pAppData )
 
 	register_signal();
 
-	drmFd = open("/dev/dri/card0", O_RDWR);
+	gDrmFd = open("/dev/dri/card0", O_RDWR);
 	if (bEnablePreview) {
-		hDsp = CreateDrmDisplay(drmFd);
+		hDsp = CreateDrmDisplay(gDrmFd);
 
 		srcRect.x = 0;
 		srcRect.y = 0;
@@ -369,11 +373,18 @@ static int32_t VpuCamDpMain( APP_DATA *pAppData )
 	MP_DRM_PLANE_INFO DrmPlaneInfo;
 	NX_FindPlaneForDisplay(dpPort, DRM_PLANE_TYPE_OVERLAY_VIDEO, 0,
 			&DrmPlaneInfo);
-	planeID = DrmPlaneInfo.iPlaneId;
+	gPlaneID = DrmPlaneInfo.iPlaneId;
 	crtcID = DrmPlaneInfo.iCrtcId;
 
+	ret = NX_SetPlanePropertyByPlaneID(gDrmFd, gPlaneID, "video-priority",
+			0, &gOrgValue);
+	if (ret < 0) {
+		printf("failed SetPlaneProperty.\n");
+		goto CAM_DP_TERMINATE;
+	}
+
 	if (bEnablePreview)
-		InitDrmDisplay(hDsp, planeID, crtcID, DRM_FORMAT_YUV420,
+		InitDrmDisplay(hDsp, gPlaneID, crtcID, DRM_FORMAT_YUV420,
 				srcRect, dstRect,  alignFactor);
 
 	if (bEnableDeinter) {
@@ -428,13 +439,14 @@ static int32_t VpuCamDpMain( APP_DATA *pAppData )
 
 		if (bEnableDeinter) {
 			pTBuf = hVideoMemory[BufferIndex];
-			manager->qSrcBuf(BufferIndex, pTBuf);
 
+			manager->qSrcBuf(BufferIndex, pTBuf);
 			printf("Deinter Buf Index = %d\n", frmCnt);
 
 			if (manager->Run()) {
 				for (i = 0; i < manager->getRunCount(); i++) {
 					manager->dqDstBuf(&pDeinterBuf);
+
 					pBuf = pDeinterBuf;
 					pSaveBuf = pBuf;
 #if SAVE_FILE
@@ -470,7 +482,7 @@ static int32_t VpuCamDpMain( APP_DATA *pAppData )
 #endif
 #endif
 					if (bEnablePreview)
-						UpdateBuffer(hDsp, pBuf, NULL);
+						UpdateBuffer(hDsp, pDeinterBuf, NULL);
 
 					manager->qDstBuf(pDeinterBuf);
 				}
@@ -541,6 +553,7 @@ CAM_DP_TERMINATE:
 			manager = NULL;
 		}
 	}
+
 
 	if (fpOut)
 		fclose(fpOut);

@@ -17,13 +17,12 @@
 #define SRC_ALIGN	32
 
 #define _DEBUG	0
-#define DEINTER_MODE	SINGLE_FRAME /* or DOUBLE_FRMAE */
 
 NX_DeinterlacerManager::NX_DeinterlacerManager(struct NX_DEINTER_PARAM param)
 	: mSrcWidth(param.srcWidth), mSrcHeight(param.srcHeight),
 	mCropWidth(param.cropWidth), mCropHeight(param.cropHeight),
 	mPixelFormat(param.format), mPlanes(param.planes),
-	mBufNum(param.bufNum)
+	mBufNum(param.bufNum), mDeinterMode(param.mode)
 {
 	int Width, Height;
 
@@ -31,7 +30,6 @@ NX_DeinterlacerManager::NX_DeinterlacerManager(struct NX_DEINTER_PARAM param)
 	mHandle = -1;
 	mDrmHandle = -1;
 
-	mDeinterMode = DEINTER_MODE;
 	mCurrentField = FIELD_EVEN;
 	mSrcType = SRC_TYPE_PARALLEL;
 
@@ -197,7 +195,6 @@ bool NX_DeinterlacerManager::dqSrcBuf(int *pIndex, NX_VID_MEMORY_INFO **pBuf)
 	int dqCount;
 
 	dqCount = (mDeinterMode == DOUBLE_FRAME) ? 2 : 1;
-
 	if (mRunCount >= dqCount) {
 		NX_PopQueue(&mSrcBufferQueue, (void **)pBuf);
 		mRunCount -= dqCount;

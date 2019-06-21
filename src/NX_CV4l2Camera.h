@@ -119,8 +119,10 @@ private:
 
 	NX_V4l2_INFO			*m_hV4l2;
 	NX_VID_MEMORY_INFO		*m_pMemSlot[MAX_BUF_NUM];
-	int32_t					m_iCurQueuedSize;
+	int32_t				m_iCurQueuedSize;
 	pthread_mutex_t			m_hLock;
+	int32_t				iQSlotIndex, iDQSlotIndex;
+	int32_t				m_bufNum;
 
 private:
 	NX_CV4l2Camera (NX_CV4l2Camera &Ref);

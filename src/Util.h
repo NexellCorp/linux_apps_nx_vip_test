@@ -11,8 +11,8 @@ typedef struct APP_DATA {
 	int32_t cropHeight;			/* Crop YUV Image Height */
 	int32_t dpWidth;			/* Display YUV Image Width */
 	int32_t dpHeight;			/* Display YUV Image Height */
-
 	int32_t dpPort;
+	int32_t deinterMode;
 
 	bool bEnableDeinter;
 	bool bEnablePreview;

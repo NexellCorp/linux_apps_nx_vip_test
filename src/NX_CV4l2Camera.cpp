@@ -15,6 +15,9 @@
 NX_CV4l2Camera::NX_CV4l2Camera()
 	: m_hV4l2		(NULL)
 	, m_iCurQueuedSize(0)
+	, iQSlotIndex(0)
+	, iDQSlotIndex(0)
+	, m_bufNum(0)
 {
 	for (int32_t i = 0; i < MAX_BUF_NUM; i++) {
 		m_pMemSlot[i] = NULL;
@@ -75,6 +78,8 @@ int32_t NX_CV4l2Camera::V4l2CameraInit(NX_V4l2_INFO *pInfo, int32_t bUseMipi)
 			return -1;
 		}
 	}
+
+	m_bufNum = pInfo->cameraBufNum;
 
 	ret = nx_v4l2_streamon(pInfo->clipperVideoFd, nx_clipper_video);
 	if (ret) {
@@ -358,7 +363,7 @@ void NX_CV4l2Camera::V4l2Deinit(NX_V4l2_INFO *pInfo)
 
 int32_t NX_CV4l2Camera::QueueBuffer( NX_VID_MEMORY_INFO *pVidMem)
 {
-	int32_t iSlotIndex, i;
+	int32_t i;
 	int32_t iRet = 0;
 
 	pthread_mutex_lock( &m_hLock );
@@ -368,14 +373,6 @@ int32_t NX_CV4l2Camera::QueueBuffer( NX_VID_MEMORY_INFO *pVidMem)
 		return -1;
 	}
 
-	for (i = 0; i < MAX_BUF_NUM; i++) {
-		if(m_pMemSlot[i] == NULL) {
-			m_pMemSlot[i] = pVidMem;
-			iSlotIndex = i;
-			break;
-		}
-	}
-
 	if (i == MAX_BUF_NUM) {
 		printf( "Fail, Have no empty slot.\n" );
 		pthread_mutex_unlock( &m_hLock );
@@ -383,19 +380,22 @@ int32_t NX_CV4l2Camera::QueueBuffer( NX_VID_MEMORY_INFO *pVidMem)
 	}
 
 	m_iCurQueuedSize++;
-	pthread_mutex_unlock( &m_hLock );
 
 	iRet = nx_v4l2_qbuf(m_hV4l2->clipperVideoFd, nx_clipper_video,
 			m_hV4l2->numPlane,
-			iSlotIndex,
-			&m_hV4l2->dmaFds[iSlotIndex],
+			iQSlotIndex,
+			&m_hV4l2->dmaFds[iQSlotIndex],
 			(int32_t *)&m_hV4l2->cameraBufSize);
-
 	if (0 > iRet) {
-		m_pMemSlot[iSlotIndex] = NULL;
+		m_pMemSlot[iQSlotIndex] = NULL;
 		printf( "Fail, nx_v4l2_qbuf().\n" );
+		pthread_mutex_unlock( &m_hLock );
 		return iRet;
 	}
+
+	iQSlotIndex = (iQSlotIndex  == (m_bufNum -1)) ? 0 : (iQSlotIndex + 1);
+
+	pthread_mutex_unlock( &m_hLock );
 
 	return 0;
 }
@@ -408,22 +408,21 @@ int32_t NX_CV4l2Camera::DequeueBuffer(int32_t *pBufferIndex,
 
 	pthread_mutex_lock( &m_hLock );
 
-	if (m_iCurQueuedSize < 2) {
+	if (m_iCurQueuedSize < 1) {
 		pthread_mutex_unlock( &m_hLock );
 		return -1;
 	}
 	pthread_mutex_unlock( &m_hLock );
 
 	iRet = nx_v4l2_dqbuf(m_hV4l2->clipperVideoFd, nx_clipper_video,
-			m_hV4l2->numPlane, &iSlotIndex);
+			m_hV4l2->numPlane, &iDQSlotIndex);
 
 	if (0 > iRet) {
 		printf("Fail, nx_v4l2_dqbuf().\n");
 		return iRet;
 	}
 
-	*ppVidMem = m_pMemSlot[iSlotIndex];
-	m_pMemSlot[iSlotIndex] = NULL;
+	*ppVidMem = m_pMemSlot[iDQSlotIndex];
 
 	if (*ppVidMem == NULL) {
 		printf( "Fail, Buffer Error.\n" );
@@ -438,18 +437,19 @@ int32_t NX_CV4l2Camera::DequeueBuffer(int32_t *pBufferIndex,
 		pVidMemInfo->planes = m_hV4l2->numPlane;
 		pVidMemInfo->format = m_hV4l2->pixelFormat;
 		pVidMemInfo->size[i] = m_hV4l2->cameraBufSize;
-		pVidMemInfo->pBuffer[i] = m_hV4l2->pVaddr[iSlotIndex];
+		pVidMemInfo->pBuffer[i] = m_hV4l2->pVaddr[iDQSlotIndex];
 		pVidMemInfo->drmFd = m_hV4l2->drmFd;
-		pVidMemInfo->dmaFd[i] = m_hV4l2->dmaFds[iSlotIndex];
-		pVidMemInfo->gemFd[i] = m_hV4l2->gemFds[iSlotIndex];
-		pVidMemInfo->flink[i] = get_flink_name(m_hV4l2->drmFd, m_hV4l2->gemFds[iSlotIndex]);
+		pVidMemInfo->dmaFd[i] = m_hV4l2->dmaFds[iDQSlotIndex];
+		pVidMemInfo->gemFd[i] = m_hV4l2->gemFds[iDQSlotIndex];
+		pVidMemInfo->flink[i] = get_flink_name(m_hV4l2->drmFd, m_hV4l2->gemFds[iDQSlotIndex]);
 	}
-
 	pVidMemInfo->stride[0] = ALIGN(m_hV4l2->width, 32);
 
-	*pBufferIndex = iSlotIndex;
+	*pBufferIndex = iDQSlotIndex;
 	pthread_mutex_lock( &m_hLock );
 	m_iCurQueuedSize--;
+
+	iDQSlotIndex = (iDQSlotIndex  == (m_bufNum -1)) ? 0 : (iDQSlotIndex + 1);
 	pthread_mutex_unlock( &m_hLock );
 
 	return iRet;

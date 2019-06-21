@@ -15,6 +15,7 @@ struct NX_DEINTER_PARAM {
 	int format;
 	int planes;
 	int bufNum;
+	int mode;
 };
 
 struct NX_DEINTER_INFO {
@@ -96,7 +97,8 @@ private:
 
 	enum nx_deinter_src_type mSrcType;
 	enum nx_deinter_src_field mCurrentField;
-	enum NX_DEINTERLACER_MODE mDeinterMode;
+	/*	enum NX_DEINTERLACER_MODE mDeinterMode;	*/
+	unsigned int mDeinterMode;
 
 	struct NX_DEINTER_INFO mDeinterInfo;
 

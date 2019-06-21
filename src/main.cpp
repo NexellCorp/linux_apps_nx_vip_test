@@ -21,6 +21,8 @@ void print_usage(const char *appName)
 		"     -d [display_width],[display_height] : display size\n"
 		"     -o [output file name]     : output file name\n"
 		"	 The storage path is \"/data/\"\n"
+		"     -m [deinterlace mode]     : 0 : single, 1: double\n"
+		"	 The option can preview single frame or double frame\n"
 		"     -D : Enable deinterlacer\n"
 		"     -P : Enable preview\n"
 		"     -E : Enable rate adjust\n"
@@ -29,9 +31,14 @@ void print_usage(const char *appName)
 		, appName);
 	printf("Examples\n");
 	printf( " camera display :\n");
-	printf("     #> %s camera_test -s 720,480 -D -P\n", appName);
-	printf("     #> %s camera_test -s 720,480 -D -P -E\n", appName);
-	printf("     #> %s camera_test -s 960,480 -c 720,480 -d 720,480 -o output.yuv -D -P\n", appName);
+	printf("     #> %s -s 720,480 -m 0 -D -P\n", appName);
+	printf("     #> %s -s 720,480 -m 1 -D -P\n", appName);
+	printf("     #> %s -s 720,480 -m 0 -D -P -E\n", appName);
+	printf("     #> %s -s 720,480 -m 1 -D -P -E\n", appName);
+	printf("     #> %s -s 720,480 -m 0 -D -P -E\n", appName);
+	printf("     #> %s -s 720,480 -m 1 -D -P -E\n", appName);
+	printf("     #> %s -s 960,480 -c 720,480 -d 720,480 -o output.yuv -m 0 -D -P\n", appName);
+	printf("     #> %s -s 960,480 -c 720,480 -d 720,480 -o output.yuv -m 1 -D -P\n", appName);
 }
 
 int32_t main(int32_t argc, char *argv[])
@@ -45,7 +52,7 @@ int32_t main(int32_t argc, char *argv[])
 
 	memset(&appData, 0, sizeof(APP_DATA));
 
-	while (-1 != (opt = getopt(argc, argv, "o:hd:s:c:d:p:DPE"))) {
+	while (-1 != (opt = getopt(argc, argv, "o:hd:s:c:d:p:m:DPE"))) {
 		switch (opt) {
 		case 'o':
 			appData.outFileName = strdup(optarg);
@@ -64,6 +71,9 @@ int32_t main(int32_t argc, char *argv[])
 		case 'd':
 			sscanf(optarg, "%d,%d", &appData.dpWidth,
 					&appData.dpHeight);
+			break;
+		case 'm':
+			sscanf(optarg, "%d", &appData.deinterMode);
 			break;
 		case 'p':
 			sscanf(optarg, "%u", &appData.dpPort);

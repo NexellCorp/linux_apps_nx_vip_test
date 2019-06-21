@@ -395,6 +395,7 @@ static int32_t VpuCamDpMain( APP_DATA *pAppData )
 		deinterParam.format = V4L2_PIX_FMT_YUV420;
 		deinterParam.planes = 1;
 		deinterParam.bufNum = IMAGE_BUFFER_NUM;
+		deinterParam.mode = pAppData->deinterMode;
 
 		manager = new NX_DeinterlacerManager(deinterParam);
 
@@ -441,7 +442,7 @@ static int32_t VpuCamDpMain( APP_DATA *pAppData )
 			pTBuf = hVideoMemory[BufferIndex];
 
 			manager->qSrcBuf(BufferIndex, pTBuf);
-			printf("Deinter Buf Index = %d\n", frmCnt);
+			/*printf("Deinter Buf Index = %d\n", frmCnt);*/
 
 			if (manager->Run()) {
 				for (i = 0; i < manager->getRunCount(); i++) {
